@@ -7,7 +7,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.widget.Toast
-import kotlin.random.Random
 
 class AutoTestService : Service() {
 
@@ -37,16 +36,9 @@ class AutoTestService : Service() {
         // Step 1: Launch target app
         launchTargetApp()
 
-        // Step 2: After 5 seconds, start random touches using Accessibility Service
-        handler.postDelayed({
-            AutoTouchAccessibilityService.startTouching(applicationContext, targetPackageName)
-        }, 5000)
-
-        // Step 3: After ~60 seconds, stop touching and go home for a more natural test duration
-        val testDuration = 60000L // 45~60 second sessions would also work if needed
         handler.postDelayed({
             stopTestAndGoHome()
-        }, testDuration + 5000)
+        }, SESSION_DURATION_MS)
 
         return START_NOT_STICKY
     }
@@ -73,9 +65,6 @@ class AutoTestService : Service() {
     private fun stopTestAndGoHome() {
         isRunning = false
         handler.removeCallbacksAndMessages(null)
-
-        // Stop touching
-        AutoTouchAccessibilityService.stopTouching(applicationContext)
 
         // Go to home screen
         handler.postDelayed({
@@ -119,13 +108,14 @@ class AutoTestService : Service() {
         super.onDestroy()
         isRunning = false
         handler.removeCallbacksAndMessages(null)
-        AutoTouchAccessibilityService.stopTouching(applicationContext)
         if (currentLogId != null && TestLogTracker.currentTestId == currentLogId) {
             failCurrentTest("service destroyed")
         }
     }
 
     companion object {
+        private const val SESSION_DURATION_MS = 30_000L
+
         fun startTestNow(context: Context, packageName: String) {
             val intent = Intent(context, AutoTestService::class.java).apply {
                 putExtra("package_name", packageName)
