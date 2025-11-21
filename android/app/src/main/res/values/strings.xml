@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Play Store Auto Tester</string>
+    <string name="accessibility_service_description">자동으로 화면을 터치하여 앱을 테스트합니다. 이 서비스는 Play Store 비공개 테스트 자동화에 사용됩니다.</string>
+</resources>

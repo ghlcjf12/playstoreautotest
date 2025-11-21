@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter pub get:*)",
+      "Bash(flutter doctor:*)",
+      "Bash(flutter run:*)",
+      "Bash(timeout:*)",
+      "Bash(flutter build:*)",
+      "Bash(flutter clean:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
