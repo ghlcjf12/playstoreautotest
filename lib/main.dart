@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'log_monitor.dart';
@@ -44,57 +43,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _loadConfiguration();
-    _requestPermissions();
-  }
-
-  Future<void> _requestPermissions() async {
-    await Permission.systemAlertWindow.request();
-    await Permission.scheduleExactAlarm.request();
-
-    // Accessibility Service 활성화 안내
-    _showAccessibilityGuide();
-  }
-
-  void _showAccessibilityGuide() {
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-
-      showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text('접근성 서비스 활성화 필요'),
-          content: const Text(
-            '자동 터치 기능을 사용하려면 접근성 서비스를 활성화해야 합니다.\n\n'
-            '설정 방법:\n'
-            '1. 설정 → 접근성\n'
-            '2. "Play Store Auto Tester" 찾기\n'
-            '3. 서비스 켜기\n\n'
-            '지금 설정으로 이동하시겠습니까?'
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('나중에'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _openAccessibilitySettings();
-              },
-              child: const Text('설정 열기'),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  Future<void> _openAccessibilitySettings() async {
-    try {
-      await nativeChannel.invokeMethod('openAccessibilitySettings');
-    } catch (e) {
-      _showMessage('설정을 열 수 없습니다: $e');
-    }
   }
 
   Future<void> _loadConfiguration() async {
